@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:Stratum.Desktop.Controls"
+        x:Class="Stratum.Desktop.Views.ImportDialogWindow"
+        Title="{DynamicResource Str.ImportBackup}"
+        Width="460" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        SystemDecorations="None"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        Foreground="{DynamicResource WindowForegroundBrush}">
+        <Border CornerRadius="12" Background="{DynamicResource WindowBackgroundBrush}"
+                BorderBrush="{DynamicResource DividerBrush}" BorderThickness="1">
+    <DockPanel>
+        <controls:TitleBar DockPanel.Dock="Top" TitleText="{DynamicResource Str.ImportBackup}" />
+        <StackPanel Margin="22,14,22,18" Spacing="12">
+            <TextBlock Text="{DynamicResource Str.UnknownFormat}" Opacity="0.6" FontSize="13" />
+            <ComboBox x:Name="FormatsCombo" HorizontalAlignment="Stretch" />
+            <TextBlock Text="{DynamicResource Str.PasswordHint}" Opacity="0.6" FontSize="13" />
+            <TextBox x:Name="PasswordBox" PasswordChar="•" PlaceholderText="{DynamicResource Str.Password}" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,8,0,0">
+                <Button Content="{DynamicResource Str.Cancel}" Click="OnCancelClicked" />
+                <Button Content="{DynamicResource Str.Import}" Classes="accent" Click="OnImportClicked"
+                        IsDefault="True" />
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
+        </Border>
+</Window>

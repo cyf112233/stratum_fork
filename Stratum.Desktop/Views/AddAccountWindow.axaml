@@ -1,0 +1,126 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Stratum.Desktop.ViewModels"
+        xmlns:controls="using:Stratum.Desktop.Controls"
+        x:Class="Stratum.Desktop.Views.AddAccountWindow"
+        x:DataType="vm:AddAccountViewModel"
+        Title="添加账户"
+        Width="600" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        SystemDecorations="None"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        Foreground="{DynamicResource WindowForegroundBrush}">
+        <Border CornerRadius="12" Background="{DynamicResource WindowBackgroundBrush}"
+                BorderBrush="{DynamicResource DividerBrush}" BorderThickness="1">
+    <DockPanel>
+        <controls:TitleBar DockPanel.Dock="Top" x:Name="HeaderBar" />
+        <Grid RowDefinitions="Auto,Auto,Auto" Margin="22,14,22,18">
+            <TabControl Classes="compact">
+                <TabItem Header="{DynamicResource Str.ManualTab}">
+                    <StackPanel Spacing="11" Margin="0,14,0,0">
+                        <ComboBox ItemsSource="{Binding TypeOptions}" SelectedItem="{Binding SelectedTypeOption}"
+                                  HorizontalAlignment="Stretch" />
+                        <TextBox PlaceholderText="{DynamicResource Str.IssuerPh}" Text="{Binding Issuer}" />
+                        <TextBox PlaceholderText="{DynamicResource Str.UsernamePh}" Text="{Binding Username}" />
+                        <TextBox PlaceholderText="{DynamicResource Str.SecretPh}" Text="{Binding Secret}" />
+                        <TextBox PlaceholderText="{DynamicResource Str.PinPh}" Text="{Binding Pin}"
+                                 IsVisible="{Binding HasPin}" />
+                        <StackPanel Orientation="Horizontal" Spacing="10"
+                                    IsVisible="{Binding HasVariableAlgorithm}">
+                            <ComboBox ItemsSource="{Binding AlgorithmLabels}"
+                                      SelectedIndex="{Binding AlgorithmIndex}" MinWidth="110" />
+                            <TextBlock Text="{DynamicResource Str.Digits}" VerticalAlignment="Center"
+                                       Opacity="0.6" />
+                            <ComboBox ItemsSource="{Binding DigitsOptions}" SelectedItem="{Binding Digits}"
+                                      MinWidth="64" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="10"
+                                    IsVisible="{Binding IsTimeBased}">
+                            <TextBlock Text="{DynamicResource Str.Period}" VerticalAlignment="Center"
+                                       Opacity="0.6" />
+                            <ComboBox ItemsSource="{Binding PeriodOptions}" SelectedItem="{Binding Period}"
+                                      MinWidth="80" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding IsHotp}">
+                            <TextBlock Text="{DynamicResource Str.Counter}" VerticalAlignment="Center"
+                                       Opacity="0.6" />
+                            <TextBox Text="{Binding Counter}" MinWidth="120" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="{DynamicResource Str.Category}" VerticalAlignment="Center"
+                                       Opacity="0.6" />
+                            <ComboBox ItemsSource="{Binding CategoryOptions}"
+                                      SelectedItem="{Binding SelectedCategoryOption}"
+                                      HorizontalAlignment="Stretch" />
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="{DynamicResource Str.UriTab}">
+                    <StackPanel Spacing="11" Margin="0,14,0,0">
+                        <TextBox PlaceholderText="{DynamicResource Str.UriPh}" Text="{Binding Uri}"
+                                 AcceptsReturn="True" Height="110" TextWrapping="Wrap" />
+                        <Button Content="{DynamicResource Str.ParseUri}" Command="{Binding ParseUriCommand}"
+                                HorizontalAlignment="Left" />
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="{DynamicResource Str.ScanTab}">
+                    <StackPanel Spacing="11" Margin="0,14,0,0">
+                        <TextBlock Text="{DynamicResource Str.ScanHint}" Opacity="0.6" FontSize="12.5" />
+                        <Button Content="{DynamicResource Str.ScanImage}" Click="OnScanQrClicked"
+                                HorizontalAlignment="Left" />
+                        <TextBlock Text="{Binding ScanStatus}" TextWrapping="Wrap" FontSize="12.5"
+                                   Foreground="#FBBF24" />
+                        <StackPanel IsVisible="{Binding HasScannedAuth}" Spacing="8">
+                            <TextBlock Text="{Binding ScanSummary}" FontSize="14" FontWeight="SemiBold" />
+                            <TextBox PlaceholderText="{DynamicResource Str.PinPh}" Text="{Binding ScanPin}"
+                                     IsVisible="{Binding ScanNeedsPin}" />
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="{DynamicResource Str.Category}" VerticalAlignment="Center"
+                                           Opacity="0.6" />
+                                <ComboBox ItemsSource="{Binding CategoryOptions}"
+                                          SelectedItem="{Binding SelectedCategoryOption}"
+                                          HorizontalAlignment="Stretch" />
+                            </StackPanel>
+                            <Button Content="{DynamicResource Str.Add}" Classes="accent"
+                                    Command="{Binding ScanAddCommand}" HorizontalAlignment="Right" />
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="{DynamicResource Str.ImportTab}">
+                    <StackPanel Spacing="11" Margin="0,14,0,0">
+                        <TextBlock Text="{DynamicResource Str.ImportTabHint}" Opacity="0.6" FontSize="12.5" />
+                        <Button Content="{DynamicResource Str.ChooseFile}" Click="OnSelectImportFileClicked"
+                                HorizontalAlignment="Left" />
+                        <TextBlock Text="{Binding ImportStatus}" TextWrapping="Wrap" FontSize="12.5"
+                                   Foreground="#FBBF24" />
+                        <StackPanel IsVisible="{Binding ImportNeedsFormat}">
+                            <ComboBox ItemsSource="{Binding ImportFormatOptions}"
+                                      SelectedIndex="{Binding SelectedImportFormatIndex}"
+                                      HorizontalAlignment="Stretch" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="10"
+                                    IsVisible="{Binding ImportNeedsPassword}">
+                            <TextBlock Text="{DynamicResource Str.Password}" VerticalAlignment="Center"
+                                       Opacity="0.6" />
+                            <TextBox Text="{Binding ImportPassword}" PasswordChar="•" MinWidth="140" />
+                        </StackPanel>
+                        <Button Content="{DynamicResource Str.Import}" Classes="accent"
+                                Command="{Binding ImportCommand}" HorizontalAlignment="Left"
+                                IsVisible="{Binding HasImportFile}" />
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+            <TextBlock Grid.Row="1" Text="{Binding Error}" Foreground="#F87171" TextWrapping="Wrap"
+                       Margin="0,10,0,0" IsVisible="{Binding HasError}" />
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10"
+                        Margin="0,18,0,0">
+                <Button Content="{DynamicResource Str.Cancel}" Click="OnCancelClicked" />
+                <Button x:Name="AddButton" Content="{DynamicResource Str.Add}" Classes="accent"
+                        Command="{Binding AddCommand}" IsDefault="True" />
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+        </Border>
+</Window>

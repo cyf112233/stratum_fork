@@ -1,0 +1,12 @@
+PackageIdentifier: cyf112233.Stratum
+PackageVersion: 1.0.0
+InstallerType: nullsoft
+Installers:
+  - Architecture: x64
+    InstallerUrl: https://github.com/cyf112233/stratum_desktop/releases/download/v1.0.0/Stratum-setup-v1.0.0-win-x64.exe
+    InstallerSha256: TODO_REPLACE_AFTER_RELEASE
+  - Architecture: arm64
+    InstallerUrl: https://github.com/cyf112233/stratum_desktop/releases/download/v1.0.0/Stratum-setup-v1.0.0-win-arm64.exe
+    InstallerSha256: TODO_REPLACE_AFTER_RELEASE
+ManifestType: installer
+ManifestVersion: 1.6.0

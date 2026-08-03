@@ -1,0 +1,203 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Stratum.Desktop.ViewModels"
+        x:Class="Stratum.Desktop.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="Stratum"
+        Width="960" Height="680"
+        MinWidth="700" MinHeight="480"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        Foreground="{DynamicResource WindowForegroundBrush}">
+    <Border CornerRadius="12" Background="{DynamicResource WindowBackgroundBrush}"
+            BorderBrush="{DynamicResource DividerBrush}" BorderThickness="1"
+            PointerMoved="OnRootPointerMoved" PointerExited="OnRootPointerExited"
+            PointerPressed="OnRootPointerPressed">
+    <DockPanel>
+        <Border DockPanel.Dock="Top">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" Background="Transparent" PointerPressed="OnTitlePointerPressed" DoubleTapped="OnTitleDoubleTapped">
+                <Border Padding="20,10" Background="Transparent">
+                    <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                        <Image Source="avares://Stratum/Resources/icon.png" Width="38" Height="38"
+                               Stretch="Uniform" />
+                        <StackPanel VerticalAlignment="Center" Spacing="1">
+                            <TextBlock Text="Stratum" FontSize="19" FontWeight="SemiBold" />
+                            <TextBlock Text="{DynamicResource Str.Subtitle}" FontSize="12"
+                                       Opacity="0.55" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10"
+                            VerticalAlignment="Center">
+                    <Button Content="{DynamicResource Str.Settings}" Command="{Binding SettingsCommand}" />
+                    <Button Content="{DynamicResource Str.Backup}">
+                        <Button.Flyout>
+                            <MenuFlyout>
+                                <MenuItem Header="{DynamicResource Str.ExportStratum}"
+                                          Command="{Binding ExportCommand}" CommandParameter="0" />
+                                <MenuItem Header="{DynamicResource Str.ExportHtml}"
+                                          Command="{Binding ExportCommand}" CommandParameter="1" />
+                                <MenuItem Header="{DynamicResource Str.ExportUriList}"
+                                          Command="{Binding ExportCommand}" CommandParameter="2" />
+                                <Separator />
+                                <MenuItem Header="{DynamicResource Str.ImportBackup}"
+                                          Command="{Binding ImportCommand}" />
+                            </MenuFlyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button Content="{DynamicResource Str.AddAccount}" Classes="accent"
+                            Command="{Binding AddCommand}" />
+                </StackPanel>
+                <StackPanel Grid.Column="3" Orientation="Horizontal">
+                    <Button Classes="caption" Width="32" Height="28" Click="OnMinimizeClicked">
+                        <Path Data="M 9,14 L 23,14" Stroke="{DynamicResource WindowForegroundBrush}"
+                              StrokeThickness="1.5" />
+                    </Button>
+                    <Button Classes="caption" Width="32" Height="28" Click="OnMaximizeClicked">
+                        <Path Data="M 10,8 L 22,8 L 22,20 L 10,20 Z"
+                              Stroke="{DynamicResource WindowForegroundBrush}" StrokeThickness="1.5" />
+                    </Button>
+                    <Button Classes="caption close" Width="32" Height="28" Click="OnCloseClicked">
+                        <Path Data="M 10,9 L 22,21 M 22,9 L 10,21"
+                              Stroke="{DynamicResource WindowForegroundBrush}" StrokeThickness="1.5" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom" IsVisible="{Binding HasStatus}" Padding="24,10"
+                Background="{DynamicResource StatusBarBrush}" CornerRadius="0,0,0,12">
+            <TextBlock Text="{Binding Status}" FontSize="13" Foreground="#4ADE80"
+                       TextTrimming="CharacterEllipsis" />
+        </Border>
+
+        <Border DockPanel.Dock="Left" Width="210" Background="{DynamicResource SidebarBrush}"
+                BorderBrush="{DynamicResource DividerBrush}" BorderThickness="0,0,1,0"
+                CornerRadius="0,0,0,12">
+            <Grid RowDefinitions="*,Auto">
+                <ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding Categories}" Margin="10,14,10,8">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:CategoryItemViewModel">
+                                <Button Classes="sidebar" Margin="0,2"
+                                        Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).SelectCategoryCommand}"
+                                        CommandParameter="{Binding}">
+                                    <Button.ContextMenu>
+                                        <ContextMenu x:DataType="vm:CategoryItemViewModel">
+                                            <MenuItem Header="重命名"
+                                                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).RenameCategoryCommand}"
+                                                      CommandParameter="{Binding}"
+                                                      IsVisible="{Binding IsRealCategory}" />
+                                            <MenuItem Header="{DynamicResource Str.Delete}"
+                                                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).DeleteCategoryCommand}"
+                                                      CommandParameter="{Binding}"
+                                                      IsVisible="{Binding IsRealCategory}" />
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                    <Grid>
+                                        <Border Background="{DynamicResource SidebarSelectedBrush}"
+                                                CornerRadius="8" IsVisible="{Binding IsSelected}" />
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Text="{Binding Label}" FontSize="13.5"
+                                                       VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Count}" FontSize="12"
+                                                       Opacity="0.5" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Grid>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+                <StackPanel Grid.Row="1" Margin="10,8,10,14" Spacing="6">
+                    <Button Content="{DynamicResource Str.NewCategory}" Command="{Binding AddCategoryCommand}"
+                            HorizontalAlignment="Stretch" CornerRadius="8" />
+                    <Button Content="{DynamicResource Str.ImportIconPack}" Command="{Binding ImportIconPackCommand}"
+                            HorizontalAlignment="Stretch" CornerRadius="8" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border BorderThickness="0,1,0,0" BorderBrush="{DynamicResource DividerBrush}"
+                CornerRadius="0,0,0,12">
+            <Grid>
+                <ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding Authenticators}" Margin="24,18">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Spacing="10" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:AuthenticatorItemViewModel">
+                                <Border Classes="card" Cursor="Hand" PointerPressed="OnCardPointerPressed">
+                                    <Border.ContextMenu>
+                                        <ContextMenu x:DataType="vm:AuthenticatorItemViewModel">
+                                            <MenuItem Header="{DynamicResource Str.CopyCode}"
+                                                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).CopyCommand}"
+                                                      CommandParameter="{Binding}" />
+                                            <MenuItem Header="{DynamicResource Str.Edit}"
+                                                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).EditCommand}"
+                                                      CommandParameter="{Binding}" />
+                                            <MenuItem Header="{DynamicResource Str.SetIcon}"
+                                                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).ChangeIconCommand}"
+                                                      CommandParameter="{Binding}" />
+                                            <MenuItem Header="{DynamicResource Str.IncrementCounter}"
+                                                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).IncrementCounterCommand}"
+                                                      CommandParameter="{Binding}"
+                                                      IsVisible="{Binding IsTimeBased}" />
+                                            <Separator />
+                                            <MenuItem Header="{DynamicResource Str.Delete}"
+                                                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).DeleteCommand}"
+                                                      CommandParameter="{Binding}" />
+                                        </ContextMenu>
+                                    </Border.ContextMenu>
+                                    <Grid ColumnDefinitions="44,*,88,Auto" ColumnSpacing="16">
+                                        <Border Width="44" Height="44" CornerRadius="22"
+                                                Background="{DynamicResource IconCircleBrush}"
+                                                VerticalAlignment="Center">
+                                            <Image Source="{Binding IconBitmap}" Width="26" Height="26"
+                                                   Stretch="Uniform" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="3">
+                                            <TextBlock Text="{Binding Issuer}" FontSize="16" FontWeight="SemiBold" />
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <TextBlock Text="{Binding Username}" FontSize="12.5" Opacity="0.6" />
+                                                <TextBlock Text="{Binding TypeText}" FontSize="11" Opacity="0.45" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center">
+                                            <Arc Width="34" Height="34" StrokeThickness="3" StartAngle="-90"
+                                                 SweepAngle="{Binding ProgressAngle}" Stroke="{Binding ArcBrush}" />
+                                            <TextBlock Text="{Binding Remaining}" FontSize="10.5" Opacity="0.7"
+                                                       HorizontalAlignment="Center" Margin="0,3,0,0" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="3" VerticalAlignment="Center"
+                                                    HorizontalAlignment="Right" Spacing="4">
+                                            <TextBlock Text="{Binding DisplayCode}" FontSize="27" FontWeight="Bold"
+                                                       FontFamily="DejaVu Sans Mono, monospace"
+                                                       HorizontalAlignment="Right"
+                                                       Foreground="{DynamicResource CodeBrush}" />
+                                            <TextBlock Text="{DynamicResource Str.Copied}" FontSize="11.5" Foreground="#4ADE80"
+                                                       HorizontalAlignment="Right" IsVisible="{Binding IsCopied}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+                <StackPanel IsVisible="{Binding IsEmpty}" VerticalAlignment="Center" HorizontalAlignment="Center"
+                            Spacing="8">
+                    <TextBlock Text="{DynamicResource Str.NoAccounts}" FontSize="17" Opacity="0.7" HorizontalAlignment="Center" />
+                    <TextBlock Text="{DynamicResource Str.NoAccountsHint}" FontSize="13" Opacity="0.45"
+                               HorizontalAlignment="Center" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DockPanel>
+    </Border>
+</Window>

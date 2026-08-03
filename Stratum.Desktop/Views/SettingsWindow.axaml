@@ -1,0 +1,52 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:Stratum.Desktop.Controls"
+        x:Class="Stratum.Desktop.Views.SettingsWindow"
+        Title="{DynamicResource Str.Settings}"
+        Width="480" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        SystemDecorations="None"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        Foreground="{DynamicResource WindowForegroundBrush}">
+        <Border CornerRadius="12" Background="{DynamicResource WindowBackgroundBrush}"
+                BorderBrush="{DynamicResource DividerBrush}" BorderThickness="1">
+    <DockPanel>
+        <controls:TitleBar DockPanel.Dock="Top" TitleText="{DynamicResource Str.Settings}" />
+        <StackPanel Margin="24,14,24,18" Spacing="16">
+            <StackPanel Spacing="8">
+                <TextBlock Text="{DynamicResource Str.Language}" FontWeight="SemiBold" FontSize="14" />
+                <ComboBox x:Name="LanguageCombo" HorizontalAlignment="Stretch">
+                    <ComboBoxItem Content="{DynamicResource Str.LangAuto}" />
+                    <ComboBoxItem Content="{DynamicResource Str.LangZh}" />
+                    <ComboBoxItem Content="{DynamicResource Str.LangEn}" />
+                </ComboBox>
+            </StackPanel>
+            <Border Height="1" Background="{DynamicResource DividerBrush}" />
+            <StackPanel Spacing="8">
+                <TextBlock Text="{DynamicResource Str.Theme}" FontWeight="SemiBold" FontSize="14" />
+                <ComboBox x:Name="ThemeCombo" HorizontalAlignment="Stretch">
+                    <ComboBoxItem Content="{DynamicResource Str.ThemeAuto}" />
+                    <ComboBoxItem Content="{DynamicResource Str.ThemeLight}" />
+                    <ComboBoxItem Content="{DynamicResource Str.ThemeDark}" />
+                </ComboBox>
+            </StackPanel>
+            <Border Height="1" Background="{DynamicResource DividerBrush}" />
+            <StackPanel Spacing="10">
+                <TextBlock Text="{DynamicResource Str.Interaction}" FontWeight="SemiBold" FontSize="14" />
+                <ToggleSwitch x:Name="ClickToCopySwitch" OnContent="{DynamicResource Str.ClickToCopy}"
+                              OffContent="{DynamicResource Str.ClickToCopy}" />
+                <ToggleSwitch x:Name="HideCodesSwitch" OnContent="{DynamicResource Str.HideCodes}"
+                              OffContent="{DynamicResource Str.HideCodes}" />
+                <ToggleSwitch x:Name="ConfirmDeleteSwitch" OnContent="{DynamicResource Str.ConfirmDelete}"
+                              OffContent="{DynamicResource Str.ConfirmDelete}" />
+            </StackPanel>
+            <Border Height="1" Background="{DynamicResource DividerBrush}" />
+            <TextBlock Opacity="0.5" FontSize="12" Text="{DynamicResource Str.About}" TextWrapping="Wrap" />
+            <Button Content="{DynamicResource Str.Close}" Classes="accent" Click="OnCloseClicked"
+                    HorizontalAlignment="Right" />
+        </StackPanel>
+    </DockPanel>
+        </Border>
+</Window>

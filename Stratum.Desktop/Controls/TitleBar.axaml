@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Stratum.Desktop.Controls.TitleBar"
+             Height="30"
+             Background="Transparent">
+    <Border Background="{DynamicResource SidebarBrush}" CornerRadius="12,12,0,0"
+            PointerPressed="OnTitlePointerPressed" DoubleTapped="OnTitleDoubleTapped">
+        <Grid ColumnDefinitions="*,Auto">
+            <TextBlock x:Name="TitleTextBlock" FontSize="12.5" Opacity="0.85" VerticalAlignment="Center"
+                       Margin="12,0,0,0" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Classes="caption" Width="32" Height="28" Click="OnMinimizeClicked">
+                    <Path Data="M 9,14 L 23,14" Stroke="{DynamicResource WindowForegroundBrush}"
+                          StrokeThickness="1.5" />
+                </Button>
+                <Button Classes="caption" Width="32" Height="28" Click="OnMaximizeClicked">
+                    <Path Data="M 10,8 L 22,8 L 22,20 L 10,20 Z"
+                          Stroke="{DynamicResource WindowForegroundBrush}" StrokeThickness="1.5" />
+                </Button>
+                <Button Classes="caption close" Width="32" Height="28" Click="OnCloseClicked">
+                    <Path Data="M 10,9 L 22,21 M 22,9 L 10,21"
+                          Stroke="{DynamicResource WindowForegroundBrush}" StrokeThickness="1.5" />
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

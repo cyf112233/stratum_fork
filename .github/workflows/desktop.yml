@@ -1,0 +1,133 @@
+name: Desktop Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  PROJECT: Stratum.Desktop/Stratum.Desktop.csproj
+
+jobs:
+  windows:
+    name: Windows (${{ matrix.rid }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rid: [win-x64, win-arm64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Publish
+        run: dotnet publish ${{ env.PROJECT }} -c Release -r ${{ matrix.rid }} --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish/${{ matrix.rid }}
+      - name: Install NSIS
+        shell: bash
+        run: |
+          for url in \
+            "https://github.com/nsis-dev/nsis/releases/download/v3.12/nsis-3.12.zip" \
+            "https://github.com/nsis-dev/nsis/releases/download/v3.12.0/nsis-3.12.zip" \
+            "https://github.com/nsis-dev/nsis/releases/download/v3.11/nsis-3.11.zip" \
+            "https://downloads.sourceforge.net/project/nsis/NSIS%203/3.12/nsis-3.12.zip" \
+            "https://downloads.sourceforge.net/project/nsis/NSIS%203/3.11/nsis-3.11.zip"; do
+            if curl -fsSL -o nsis.zip "$url"; then
+              echo "Downloaded NSIS from $url"
+              break
+            fi
+          done
+          test -f nsis.zip || { echo "Failed to download NSIS" >&2; exit 1; }
+          powershell -Command "Expand-Archive -Path nsis.zip -DestinationPath nsis -Force"
+          rm -f nsis.zip
+      - name: Package installer
+        shell: bash
+        run: |
+          rm -f publish/${{ matrix.rid }}/*.pdb
+          mkdir -p dist
+          MAKENSIS="$(find nsis -iname makensis.exe | head -1)"
+          test -n "$MAKENSIS" || { echo "makensis.exe not found" >&2; exit 1; }
+          "$MAKENSIS" -DVERSION=${{ github.ref_name }} -DRID=${{ matrix.rid }} -DSOURCEDIR="$(pwd)/publish/${{ matrix.rid }}" -DOUTDIR="$(pwd)/dist" packaging/windows/setup.nsi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stratum-windows-${{ matrix.rid }}
+          path: dist/Stratum-setup-*.exe
+          if-no-files-found: error
+
+  linux:
+    name: Linux (${{ matrix.rid }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: linux-x64
+            runner: ubuntu-22.04
+            debarch: amd64
+            rpmarch: x86_64
+            appimage-arch: x86_64
+          - rid: linux-arm64
+            runner: ubuntu-24.04-arm
+            debarch: arm64
+            rpmarch: aarch64
+            appimage-arch: aarch64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Publish
+        run: dotnet publish ${{ env.PROJECT }} -c Release -r ${{ matrix.rid }} --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish/${{ matrix.rid }}
+      - name: Install rpmbuild
+        run: sudo apt-get update && sudo apt-get install -y rpm
+      - name: Package .deb
+        run: bash packaging/linux/build-deb.sh publish/${{ matrix.rid }} ${{ matrix.rid }} dist
+      - name: Package .rpm
+        run: VERSION=${{ github.ref_name }} bash packaging/linux/build-rpm.sh publish/${{ matrix.rid }} ${{ matrix.rpmarch }} dist
+      - name: Package AppImage
+        if: matrix.appimage-arch != ''
+        run: VERSION=${{ github.ref_name }} bash packaging/linux/build-appimage.sh publish/${{ matrix.rid }} ${{ matrix.appimage-arch }} dist
+      - name: Package tarball
+        run: |
+          mkdir -p dist/tar
+          cp publish/${{ matrix.rid }}/Stratum dist/tar/stratum
+          chmod +x dist/tar/stratum
+          cp -r publish/${{ matrix.rid }}/Assets dist/tar/Assets
+          tar -czf dist/stratum-${{ github.ref_name }}-${{ matrix.rid }}.tar.gz -C dist/tar .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stratum-linux-${{ matrix.rid }}
+          path: dist/
+          if-no-files-found: error
+
+  release:
+    name: Publish Release
+    needs: [windows, linux]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: stratum-*
+          merge-multiple: true
+      - name: Build NuGet offline bundle
+        run: bash packaging/flathub/collect-nuget.sh
+      - name: Collect files
+        run: |
+          mkdir -p dist
+          find artifacts -type f | while read -r f; do cp "$f" dist/; done
+          ls -la dist/
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: dist/*
+          generate_release_notes: true

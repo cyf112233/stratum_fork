@@ -1,0 +1,98 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Stratum.Desktop.App"
+             RequestedThemeVariant="Dark">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#0E1116" />
+                    <SolidColorBrush x:Key="WindowForegroundBrush" Color="#E6E9EF" />
+                    <SolidColorBrush x:Key="CardBackgroundBrush" Color="#141A24" />
+                    <SolidColorBrush x:Key="CardHoverBrush" Color="#1A2230" />
+                    <SolidColorBrush x:Key="CardBorderBrush" Color="#222B3A" />
+                    <SolidColorBrush x:Key="DividerBrush" Color="#1B222F" />
+                    <SolidColorBrush x:Key="IconCircleBrush" Color="#1F2B47" />
+                    <SolidColorBrush x:Key="StatusBarBrush" Color="#18202E" />
+                    <SolidColorBrush x:Key="SidebarBrush" Color="#10151D" />
+                    <SolidColorBrush x:Key="SidebarHoverBrush" Color="#18202E" />
+                    <SolidColorBrush x:Key="SidebarSelectedBrush" Color="#1B2A47" />
+                    <SolidColorBrush x:Key="CodeBrush" Color="#E6E9EF" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#F2F4F8" />
+                    <SolidColorBrush x:Key="WindowForegroundBrush" Color="#1A1D24" />
+                    <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FFFFFF" />
+                    <SolidColorBrush x:Key="CardHoverBrush" Color="#EDF1F7" />
+                    <SolidColorBrush x:Key="CardBorderBrush" Color="#D9DFEA" />
+                    <SolidColorBrush x:Key="DividerBrush" Color="#E2E7EF" />
+                    <SolidColorBrush x:Key="IconCircleBrush" Color="#E8EEFB" />
+                    <SolidColorBrush x:Key="StatusBarBrush" Color="#E4EAEF" />
+                    <SolidColorBrush x:Key="SidebarBrush" Color="#F8FAFC" />
+                    <SolidColorBrush x:Key="SidebarHoverBrush" Color="#EEF2F8" />
+                    <SolidColorBrush x:Key="SidebarSelectedBrush" Color="#DCE7FA" />
+                    <SolidColorBrush x:Key="CodeBrush" Color="#1A1D24" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+        <Style Selector="Window">
+            <Setter Property="FontFamily" Value="Microsoft YaHei, Noto Sans CJK SC, Inter, sans-serif" />
+        </Style>
+        <Style Selector="Button.accent">
+            <Setter Property="Background" Value="#2B6DE9" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="18,10" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="Button.accent:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#4C82F5" />
+        </Style>
+        <Style Selector="Button.accent:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2056C0" />
+        </Style>
+        <Style Selector="Button.sidebar">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource WindowForegroundBrush}" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
+        <Style Selector="Button.sidebar:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource SidebarHoverBrush}" />
+        </Style>
+        <Style Selector="Button.sidebar.selected">
+            <Setter Property="Background" Value="{DynamicResource SidebarSelectedBrush}" />
+        </Style>
+        <Style Selector="Button.caption">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+        <Style Selector="Button.caption:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource SidebarHoverBrush}" />
+        </Style>
+        <Style Selector="Button.caption.close:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E81123" />
+        </Style>
+        <Style Selector="TabControl.compact TabItem">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="12,6" />
+        </Style>
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="16,14" />
+            <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="Border.card:pointerover">
+            <Setter Property="Background" Value="{DynamicResource CardHoverBrush}" />
+        </Style>
+    </Application.Styles>
+</Application>

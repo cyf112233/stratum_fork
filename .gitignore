@@ -333,3 +333,10 @@ ASALocalRun/
 fastlane/report.xml
 
 extra/.venv/
+
+# Linux desktop packaging / distribution artifacts
+dist/
+*.deb
+*.dmg
+*.pkg
+Stratum-setup*.exe

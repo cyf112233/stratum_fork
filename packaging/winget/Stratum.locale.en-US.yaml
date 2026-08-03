@@ -1,0 +1,23 @@
+PackageIdentifier: cyf112233.Stratum
+PackageVersion: 1.0.0
+PackageLocale: en-US
+Publisher: cyf112233
+PublisherUrl: https://github.com/cyf112233
+PackageName: Stratum
+PackageUrl: https://github.com/cyf112233/stratum_desktop
+License: GPL-3.0
+LicenseUrl: https://www.gnu.org/licenses/gpl-3.0.html
+ShortDescription: Two-factor authenticator (TOTP/HOTP/Steam/mOTP/Yandex)
+Description: Cross-platform two-factor authentication desktop client with encrypted backups, categories, icon packs and import from 16 other authenticator apps.
+Moniker: stratum
+Tags:
+  - 2fa
+  - authenticator
+  - otp
+  - totp
+  - hotp
+  - steam
+  - yandex
+  - security
+ManifestType: defaultLocale
+ManifestVersion: 1.6.0

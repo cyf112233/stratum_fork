@@ -1,0 +1,28 @@
+name: stratum-2fa
+base: core24
+version: '1.0.0'
+summary: Two-factor authenticator
+description: |
+  Cross-platform two-factor authentication desktop client.
+  Supports TOTP/HOTP/Steam/mOTP/Yandex codes, encrypted backups, categories,
+  icon packs and importing from other authenticator apps.
+grade: stable
+confinement: strict
+apps:
+  stratum:
+    command: bin/stratum
+    extensions: [gnome]
+    plugs:
+      - home
+      - xdg-data
+      - network
+parts:
+  stratum:
+    plugin: dump
+    source: https://github.com/cyf112233/stratum_desktop/releases/download/v1.0.0/stratum-v1.0.0-linux-x64.tar.gz
+    organize:
+      Stratum: bin/stratum
+      Assets: bin/Assets
+    stage:
+      - bin/stratum
+      - bin/Assets

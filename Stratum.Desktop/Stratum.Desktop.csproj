@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <LangVersion>13</LangVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>Stratum</AssemblyName>
+    <RootNamespace>Stratum.Desktop</RootNamespace>
+    <RuntimeIdentifiers>linux-x64;linux-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.1" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.11" />
+    <PackageReference Include="Tmds.DBus" Version="0.94.2" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.10" />
+    <PackageReference Include="ZXing.Net" Version="0.16.9" />
+    <PackageReference Include="SkiaSharp" Version="3.119.4" />
+    <ProjectReference Include="..\Stratum.Core\Stratum.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="..\icons\*.png" Link="Icons\%(Filename)%(Extension)" />
+    <AvaloniaResource Include="..\icons.csv" Link="Icons.csv" />
+    <AvaloniaResource Include="Resources\**" />
+    <AvaloniaResource Include="Strings\**" />
+    <AvaloniaResource Include="Fonts\**\*.ttf" />
+    <AvaloniaResource Include="Fonts\**\*.ttc" />
+    <AvaloniaResource Include="Fonts\**\*.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Assets\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
