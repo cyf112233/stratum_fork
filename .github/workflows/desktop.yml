@@ -99,7 +99,11 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: stratum-linux-${{ matrix.rid }}
-          path: dist/
+          path: |
+            dist/*.deb
+            dist/*.rpm
+            dist/*.AppImage
+            dist/*.tar.gz
           if-no-files-found: error
 
   release:
@@ -110,17 +114,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
           pattern: stratum-*
           merge-multiple: true
-      - name: Build NuGet offline bundle
-        run: bash packaging/flathub/collect-nuget.sh
       - name: Collect files
         run: |
           mkdir -p dist
