@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Stratum
-Comment=Two-factor authenticator
-Exec=stratum
-Icon=org.stratumauth.Desktop
-Terminal=false
-Type=Application
-Categories=Utility;Security;
-StartupNotify=true
